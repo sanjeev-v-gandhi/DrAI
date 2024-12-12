@@ -26,4 +26,4 @@ COPY . /app/
 EXPOSE 5000
 
 # Run the Flask app using Gunicorn for production
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "-w", "1", "--timeout", "300", "-b", "0.0.0.0:5000", "app:app"]
