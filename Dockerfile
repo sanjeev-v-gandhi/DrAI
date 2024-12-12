@@ -19,11 +19,11 @@ COPY requirements.txt /app/
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the Flask app code into the image
+# Copy the entire project into the container, including the model directory
 COPY . /app/
 
 # Expose the port the app runs on
-EXPOSE 5000
+EXPOSE 8080
 
 # Run the Flask app using Gunicorn for production
-CMD ["gunicorn", "-w", "1", "--timeout", "300", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "-w", "1", "--timeout", "300", "-b", "0.0.0.0:8080", "app:app"]

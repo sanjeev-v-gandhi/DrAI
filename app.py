@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request, jsonify, session
 from transformers import BartForConditionalGeneration, BartTokenizer
 import torch
@@ -6,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necessary for session storage
 
 # Load the fine-tuned BART model and tokenizer
-model_path = "/app/model/BART-FineTuned/Final"  # Replace with your actual model path
+model_path = os.path.join(os.getcwd(), "model", "BART-FineTuned", "Final")
 model = BartForConditionalGeneration.from_pretrained(model_path,  use_safetensors=True)
 tokenizer = BartTokenizer.from_pretrained(model_path)
 
@@ -44,10 +46,11 @@ def generate():
 # Function to generate diagnosis based on symptoms using the model
 def generate_diagnosis(symptoms):
     inputs = tokenizer(symptoms, return_tensors="pt").to(model.device)
-    outputs = model.generate(**inputs, max_length=128)  # Adjust max_length as needed
+    outputs = model.generate(**inputs, max_length=300)
     diagnosis = tokenizer.decode(outputs[0], skip_special_tokens=True)
     return diagnosis
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.getenv("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
